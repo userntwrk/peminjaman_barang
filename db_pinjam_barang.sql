@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.4
+-- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 15 Apr 2019 pada 16.28
--- Versi server: 10.1.37-MariaDB
--- Versi PHP: 5.6.40
+-- Waktu pembuatan: 13 Bulan Mei 2023 pada 10.12
+-- Versi server: 10.4.17-MariaDB
+-- Versi PHP: 8.0.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -21,7 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_pinjam_barang`
 --
-CREATE DATABASE `db_pinjam_barang`;
+
 -- --------------------------------------------------------
 
 --
@@ -33,7 +32,7 @@ CREATE TABLE `pemberitahuan` (
   `username` varchar(50) NOT NULL,
   `konten` varchar(1000) NOT NULL,
   `status` enum('terima','tolak') NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -46,7 +45,13 @@ INSERT INTO `pemberitahuan` (`id`, `username`, `konten`, `status`, `timestamp`) 
 (19, 'adlubagus94', 'Permintaan Peminjaman Barang Anda Telah di Terima. 2 buah Speaker kecil. Username: adlubagus94. Silahkan ke bagian Sarpras untuk mengampil barang', 'terima', '2018-11-11 01:55:54'),
 (20, 'adlubagus94', 'Permintaan Pengembalian Barang Anda Telah di Terima.  buah . Username: ', '', '2018-11-11 01:56:40'),
 (21, 'usertest123', 'Permintaan Peminjaman Barang Anda Telah di Terima. 1 buah LCD. Username: usertest123. Silahkan ke bagian Sarpras untuk mengampil barang', 'terima', '2018-11-11 05:30:46'),
-(22, 'usertest123', 'Permintaan Pengembalian Barang Anda Telah di Terima.  buah . Username: ', '', '2018-11-11 05:31:51');
+(22, 'usertest123', 'Permintaan Pengembalian Barang Anda Telah di Terima.  buah . Username: ', '', '2018-11-11 05:31:51'),
+(23, 'admin', 'Permintaan Peminjaman Barang Anda Telah di Terima. 1 buah Cikrak. Username: admin. Silahkan ke bagian Sarpras untuk mengampil barang', 'terima', '2023-05-12 06:14:20'),
+(24, 'admin', 'Permintaan Pengembalian Barang Anda Telah di Terima.  buah . Username: ', '', '2023-05-12 06:23:22'),
+(25, 'user', 'Permintaan Peminjaman Barang Anda Telah di Terima. 2 buah LCD. Username: user. Silahkan ke bagian Sarpras untuk mengampil barang', 'terima', '2023-05-12 12:31:03'),
+(26, 'user', 'Permintaan Pengembalian Barang Anda Telah di Terima.  buah . Username: ', '', '2023-05-12 13:14:27'),
+(27, 'user', 'Permintaan Peminjaman Barang Anda Telah di Terima. 3 buah Sapu. Username: user. Silahkan ke bagian Sarpras untuk mengampil barang', 'terima', '2023-05-13 08:02:50'),
+(28, 'user', 'Permintaan Pengembalian Barang Anda Telah di Terima.  buah . Username: ', '', '2023-05-13 08:05:02');
 
 -- --------------------------------------------------------
 
@@ -57,7 +62,9 @@ INSERT INTO `pemberitahuan` (`id`, `username`, `konten`, `status`, `timestamp`) 
 CREATE TABLE `tbl_barang` (
   `id` int(11) NOT NULL,
   `nama_barang` varchar(100) NOT NULL,
+  `merk_barang` varchar(50) NOT NULL,
   `gambar_barang` varchar(100) NOT NULL,
+  `tahun_barang` year(4) NOT NULL,
   `stok_barang` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -65,12 +72,12 @@ CREATE TABLE `tbl_barang` (
 -- Dumping data untuk tabel `tbl_barang`
 --
 
-INSERT INTO `tbl_barang` (`id`, `nama_barang`, `gambar_barang`, `stok_barang`) VALUES
-(1, 'LCD', 'projektor2.jpeg', 30),
-(2, 'Sapu', 'sapu.jpg', 45),
-(3, 'Cikrak', 'cikrak.jpg', 40),
-(4, 'Speaker kecil', 'spiker.jpg', 25),
-(6, 'Terminal', '5000799_0445182c-0725-49a5-81a7-trminal.jpg', 20);
+INSERT INTO `tbl_barang` (`id`, `nama_barang`, `merk_barang`, `gambar_barang`, `tahun_barang`, `stok_barang`) VALUES
+(1, 'LCD', 'logitechh', 'projektor2.jpeg', 2021, 30),
+(2, 'Sapu', 'esapu', 'sapu.jpg', 2021, 45),
+(3, 'Cikrak', 'ckreak', 'cikrak.jpg', 2021, 40),
+(4, 'Speaker kecil', 'votre', 'spiker.jpg', 2022, 25),
+(7, 'Terminal', 'term', '5000799_0445182c-0725-49a5-81a7-trminal.jpg', 2020, 40);
 
 -- --------------------------------------------------------
 
@@ -81,9 +88,11 @@ INSERT INTO `tbl_barang` (`id`, `nama_barang`, `gambar_barang`, `stok_barang`) V
 CREATE TABLE `tbl_pinjam` (
   `id` int(11) NOT NULL,
   `nama_barang` varchar(50) NOT NULL,
+  `merk_barang` varchar(50) NOT NULL,
   `peminjam` varchar(100) NOT NULL,
   `level` varchar(50) NOT NULL,
   `jml_barang` int(50) NOT NULL,
+  `tahun_barang` year(4) NOT NULL,
   `tgl_pinjam` varchar(50) NOT NULL,
   `tgl_kembali` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -97,9 +106,11 @@ CREATE TABLE `tbl_pinjam` (
 CREATE TABLE `tbl_request` (
   `id` int(11) NOT NULL,
   `nama_barang` varchar(50) NOT NULL,
+  `merk_barang` varchar(50) NOT NULL,
   `peminjam` varchar(50) NOT NULL,
   `level` varchar(50) NOT NULL,
   `jml_barang` int(11) NOT NULL,
+  `tahun_barang` year(4) NOT NULL,
   `tgl_pinjam` varchar(50) NOT NULL,
   `tgl_kembali` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -113,9 +124,11 @@ CREATE TABLE `tbl_request` (
 CREATE TABLE `tbl_req_kembali` (
   `id` int(11) NOT NULL,
   `nama_barang` varchar(50) NOT NULL,
+  `merk_barang` varchar(50) NOT NULL,
   `peminjam` varchar(50) NOT NULL,
   `level` varchar(50) NOT NULL,
   `jml_barang` int(11) NOT NULL,
+  `tahun_barang` year(4) NOT NULL,
   `tgl_pinjam` varchar(50) NOT NULL,
   `tgl_kembali` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -129,9 +142,11 @@ CREATE TABLE `tbl_req_kembali` (
 CREATE TABLE `tbl_transaksi` (
   `id` int(11) NOT NULL,
   `nama_barang` varchar(50) NOT NULL,
+  `merk_barang` varchar(50) NOT NULL,
   `peminjam` varchar(100) NOT NULL,
   `level` varchar(50) NOT NULL,
   `jml_barang` int(11) NOT NULL,
+  `tahun_barang` year(4) NOT NULL,
   `tgl_pinjam` varchar(50) NOT NULL,
   `tgl_kembali` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -140,15 +155,18 @@ CREATE TABLE `tbl_transaksi` (
 -- Dumping data untuk tabel `tbl_transaksi`
 --
 
-INSERT INTO `tbl_transaksi` (`id`, `nama_barang`, `peminjam`, `level`, `jml_barang`, `tgl_pinjam`, `tgl_kembali`) VALUES
-(1, 'Terminal', 'budi_kun', 'XI RPL 2', 10, '12 November 2018 - 07:30 ', '12 November 2018 - 16:00 '),
-(2, 'Terminal', 'adlubagus94', 'XII RPL 1', 2, '10 November 2018 - 15:00 ', '10 November 2018 - 16:00 '),
-(3, 'Terminal', 'bagusi', 'X TKJ 3', 2, '12 November 2018 - 12:35 ', '12 November 2018 - 16:10 '),
-(4, 'LCD', 'bagusi', 'X TKJ 3', 1, '14 November 2018 - 09:00 ', '14 November 2018 - 11:30 '),
-(5, 'LCD', 'budi_kun', 'XI RPL 2', 1, '14 November 2018 - 09:00 ', '14 November 2018 - 11:30 '),
-(6, 'LCD', 'adlubagus94', 'XII RPL 1', 1, '12 November 2018 - 07:30 ', '12 November 2018 - 10:00 '),
-(7, 'Speaker kecil', 'adlubagus94', 'XII RPL 1', 2, '13 November 2018 - 10:00 ', '13 November 2018 - 12:00 '),
-(8, 'LCD', 'usertest123', 'xii rpl', 1, '20 November 2018 - 16:00 ', '21 November 2018 - 13:25 ');
+INSERT INTO `tbl_transaksi` (`id`, `nama_barang`, `merk_barang`, `peminjam`, `level`, `jml_barang`, `tahun_barang`, `tgl_pinjam`, `tgl_kembali`) VALUES
+(1, 'Terminal', '', 'budi_kun', 'XI RPL 2', 10, 0000, '12 November 2018 - 07:30 ', '12 November 2018 - 16:00 '),
+(2, 'Terminal', '', 'adlubagus94', 'XII RPL 1', 2, 0000, '10 November 2018 - 15:00 ', '10 November 2018 - 16:00 '),
+(3, 'Terminal', '', 'bagusi', 'X TKJ 3', 2, 0000, '12 November 2018 - 12:35 ', '12 November 2018 - 16:10 '),
+(4, 'LCD', '', 'bagusi', 'X TKJ 3', 1, 0000, '14 November 2018 - 09:00 ', '14 November 2018 - 11:30 '),
+(5, 'LCD', '', 'budi_kun', 'XI RPL 2', 1, 0000, '14 November 2018 - 09:00 ', '14 November 2018 - 11:30 '),
+(6, 'LCD', '', 'adlubagus94', 'XII RPL 1', 1, 0000, '12 November 2018 - 07:30 ', '12 November 2018 - 10:00 '),
+(7, 'Speaker kecil', '', 'adlubagus94', 'XII RPL 1', 2, 0000, '13 November 2018 - 10:00 ', '13 November 2018 - 12:00 '),
+(8, 'LCD', '', 'usertest123', 'xii rpl', 1, 0000, '20 November 2018 - 16:00 ', '21 November 2018 - 13:25 '),
+(9, 'Cikrak', '', 'admin', 'member', 1, 0000, '12 Mei 2023 - 13:45 ', '01 Juni 2023 - 13:00 '),
+(10, 'LCD', '', 'user', 'siswa', 2, 0000, '12 Mei 2023 - 19:29 ', '13 Mei 2023 - 15:25 '),
+(11, 'Sapu', 'sapu terbang', 'user', 'member', 3, 2020, '13 Mei 2023 - 14:23 ', '14 Mei 2023 - 14:20 ');
 
 -- --------------------------------------------------------
 
@@ -173,7 +191,8 @@ INSERT INTO `user` (`id`, `nama`, `username`, `password`, `level`) VALUES
 (3, 'Adlu Bagus I.', 'adlubagus94', 'a193df56eb6d42b05bfdba808eb2de35', 'XII RPL 1'),
 (4, 'Budi Serizawa', 'budi_kun', 'e10adc3949ba59abbe56e057f20f883e', 'XI RPL 2'),
 (5, 'Bagus Irawan', 'bagusi', 'e10adc3949ba59abbe56e057f20f883e', 'X TKJ 3'),
-(6, 'user test', 'usertest123', 'e10adc3949ba59abbe56e057f20f883e', 'xii rpl ');
+(6, 'user test', 'usertest123', 'e10adc3949ba59abbe56e057f20f883e', 'xii rpl '),
+(7, 'user', 'user', '25d55ad283aa400af464c76d713c07ad', 'user');
 
 --
 -- Indexes for dumped tables
@@ -229,43 +248,43 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT untuk tabel `pemberitahuan`
 --
 ALTER TABLE `pemberitahuan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_barang`
 --
 ALTER TABLE `tbl_barang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_pinjam`
 --
 ALTER TABLE `tbl_pinjam`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_request`
 --
 ALTER TABLE `tbl_request`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_req_kembali`
 --
 ALTER TABLE `tbl_req_kembali`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_transaksi`
 --
 ALTER TABLE `tbl_transaksi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
